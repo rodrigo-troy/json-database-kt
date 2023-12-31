@@ -1,28 +1,43 @@
 package jsondatabase.server
 
-
 fun main() {
-    val server = ServerSocket()
-    val readMessage = server.readMessage()
-    println("Received: $readMessage")
-    val msg = "A record # 12 was sent!"
-    server.sendMessage(msg)
-    println("Sent: $msg")
-    server.close()
-}
-
-private fun stage1() {
-    val db = TextDatabase()
+    val db = TextDatabase(1000)
     val processor = CommandProcessor(db)
-    var command = readlnOrNull()?.split(" ")
+    val server = ServerSocket()
 
-    while (command?.get(0) != "exit") {
-        try {
-            val result = processor.getCommand(command).execute()
-            println(result)
-        } catch (e: IllegalArgumentException) {
-            println("Unknown command. Type set, get, delete, or exit.")
+    while (true) {
+        val readMessage = server.readMessage()
+        println("Received: $readMessage")
+
+        val matchResult = Regex("-t (\\w+) -i (\\d+)( -m (.*))?").find(readMessage)
+        val type = matchResult?.groups?.get(1)?.value
+        val index = matchResult?.groups?.get(2)?.value?.toInt()
+        val message = matchResult?.groups?.get(4)?.value
+
+        println("Type: $type")
+        println("Index: $index")
+        println("Message: $message")
+
+        if (type == null) {
+            server.sendMessage("Unknown command. Type set, get, delete, or exit.")
+            continue
         }
-        command = readlnOrNull()?.split(" ")
+
+        if (type == "exit") {
+            server.sendMessage(SUCCESS_RES)
+            break
+        }
+
+        if (index == null) {
+            server.sendMessage("Invalid index")
+            continue
+        }
+
+        val result = processor.getCommand(type, index, message ?: "").execute()
+        println("Result: $result")
+
+        server.sendMessage(result)
     }
+
+    server.close()
 }

@@ -1,5 +1,7 @@
 package jsondatabase.server
 
+const val ERROR_RES = "ERROR"
+
 interface Command {
     fun execute(): String
 }
@@ -25,6 +27,11 @@ class CommandProcessor(private val db: TextDatabase) {
         "get" to { index: Int, _: List<String> -> GetCommand(db, index) },
         "delete" to { index: Int, _: List<String> -> DeleteCommand(db, index) }
     )
+
+    fun getCommand(cmd: String, index: Int, args: String): Command {
+        val commandFunc = commands[cmd] ?: throw IllegalArgumentException("Unknown command")
+        return commandFunc(index, args.split(" "))
+    }
 
     fun getCommand(command: List<String>?): Command {
         val cmd = command?.getOrNull(0)
