@@ -1,31 +1,28 @@
 package jsondatabase.server
 
+import jsondatabase.RegexMatcher
+
 fun main() {
     val db = TextDatabase(1000)
     val processor = CommandProcessor(db)
     val server = ServerSocket()
+    val regexMatcher = RegexMatcher()
 
     while (true) {
+        server.acceptClient()
         val readMessage = server.readMessage()
         println("Received: $readMessage")
 
-        val matchResult = Regex("-t (\\w+) -i (\\d+)( -m (.*))?").find(readMessage)
-        val type = matchResult?.groups?.get(1)?.value
-        val index = matchResult?.groups?.get(2)?.value?.toInt()
-        val message = matchResult?.groups?.get(4)?.value
+        if (regexMatcher.isExitCommand(readMessage)) {
+            server.sendMessage(SUCCESS_RES)
+            break
+        }
 
-        println("Type: $type")
-        println("Index: $index")
-        println("Message: $message")
+        val (type, index, message) = regexMatcher.getSetGetDeleteValues(readMessage)
 
         if (type == null) {
             server.sendMessage("Unknown command. Type set, get, delete, or exit.")
             continue
-        }
-
-        if (type == "exit") {
-            server.sendMessage(SUCCESS_RES)
-            break
         }
 
         if (index == null) {

@@ -6,6 +6,9 @@ import java.net.InetAddress
 import java.net.ServerSocket
 import java.net.Socket
 
+/**
+ * Represents a server socket that listens for incoming client connections and allows sending and receiving messages.
+ */
 class ServerSocket {
     private val server = ServerSocket(23456, 50, InetAddress.getByName("127.0.0.1"))
     private lateinit var socket: Socket
@@ -14,10 +17,9 @@ class ServerSocket {
 
     init {
         println("Server started!")
-        this.acceptClient()
     }
 
-    private fun acceptClient() {
+    fun acceptClient() {
         socket = server.accept()
         input = DataInputStream(socket.getInputStream())
         output = DataOutputStream(socket.getOutputStream())
@@ -28,7 +30,13 @@ class ServerSocket {
         output.flush()
     }
 
-    fun readMessage() = input.readUTF()
+    fun readMessage(): String {
+        return input.readUTF()
+    }
 
-    fun close() = socket.close()
+    fun close() {
+        socket.close()
+        input.close()
+        output.close()
+    }
 }
