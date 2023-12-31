@@ -12,7 +12,12 @@ class ServerSocket {
     private lateinit var input: DataInputStream
     private lateinit var output: DataOutputStream
 
-    fun acceptClient() {
+    init {
+        println("Server started!")
+        this.acceptClient()
+    }
+
+    private fun acceptClient() {
         socket = server.accept()
         input = DataInputStream(socket.getInputStream())
         output = DataOutputStream(socket.getOutputStream())
@@ -21,7 +26,6 @@ class ServerSocket {
     fun sendMessage(msg: String) {
         output.writeUTF(msg)
         output.flush()
-        this.close()
     }
 
     fun readMessage() = input.readUTF()
