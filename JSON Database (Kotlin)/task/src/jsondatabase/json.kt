@@ -19,6 +19,6 @@ data class JsonCommand(val type: String?, val key: String? = null, val value: St
 }
 
 @Serializable
-data class JsonResponse(val response: String, val reason: String?, val value: String?)
+data class JsonResponse(val response: String, val reason: String? = null, val value: String? = null)
 
 

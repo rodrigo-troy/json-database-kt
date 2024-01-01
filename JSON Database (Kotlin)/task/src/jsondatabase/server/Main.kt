@@ -39,8 +39,6 @@ fun main() {
             )
         ).execute()
 
-
-
         println("Result: $result")
 
         server.sendMessage(result)
