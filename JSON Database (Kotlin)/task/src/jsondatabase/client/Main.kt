@@ -1,20 +1,26 @@
 package jsondatabase.client
 
+import jsondatabase.JsonCommand
 import jsondatabase.RegexMatcher
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 fun main(args: Array<String>) {
     val regexMatcher = RegexMatcher()
     val clientSocket = ClientSocket()
     val msg = args.joinToString(" ")
-    clientSocket.sendMessage(msg)
 
     if (regexMatcher.isExitCommand(msg)) {
-        println("Sent: exit")
+        val json = Json.encodeToString(JsonCommand("exit", null, null))
+        clientSocket.sendMessage(json)
+        println("Sent: $json")
     } else if (regexMatcher.isNullCommand(msg)) {
         println("Sent: null")
     } else {
         val (type, index, message) = regexMatcher.getSetGetDeleteValues(msg)
-        println("Sent: $type $index $message")
+        val json = Json.encodeToString(JsonCommand(type, index, message))
+        clientSocket.sendMessage(json)
+        println("Sent: $json")
     }
 
     val readMessage = clientSocket.readMessage()

@@ -9,7 +9,7 @@ $ Project: json-database-kt
  */
 class RegexMatcher {
     private val regexExit = Regex("-t (exit)")
-    private val regexSetGetDelete = Regex("-t (set|get|delete) -i (\\d+)( -m (.+))?")
+    private val regexSetGetDelete = Regex("-t (set|get|delete) -k (\\d+)( -v (.+))?")
 
     fun isExitCommand(input: String): Boolean {
         return regexExit.find(input) != null
@@ -19,10 +19,10 @@ class RegexMatcher {
         return regexExit.find(input) != null && regexSetGetDelete.find(input) != null
     }
 
-    fun getSetGetDeleteValues(input: String): Triple<String?, Int?, String?> {
+    fun getSetGetDeleteValues(input: String): Triple<String?, String?, String?> {
         val matchResultSetGetDelete = regexSetGetDelete.find(input)
         val type = matchResultSetGetDelete?.groups?.get(1)?.value
-        val index = matchResultSetGetDelete?.groups?.get(2)?.value?.toInt()
+        val index = matchResultSetGetDelete?.groups?.get(2)?.value
         val message = matchResultSetGetDelete?.groups?.get(4)?.value
         return Triple(type, index, message)
     }
