@@ -6,9 +6,18 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 fun main(args: Array<String>) {
+    args.forEachIndexed() { index, arg ->
+        println("Argument $index: $arg")
+    }
     val regexMatcher = RegexMatcher()
     val clientSocket = ClientSocket()
-    val msg = args.joinToString(" ")
+    val msg = args.joinToString(" ") { arg ->
+        if (arg.contains(" ")) {
+            "\"$arg\""
+        } else {
+            arg
+        }
+    }
 
     try {
         if (regexMatcher.isExitCommand(msg)) {

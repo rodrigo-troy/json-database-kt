@@ -29,8 +29,10 @@ class GetCommand(private val db: TextDatabase, private val key: String) : Comman
 
 class DeleteCommand(private val db: TextDatabase, private val key: String) : Command {
     override fun execute(): String {
-        val response = if (db.delete(key)) SUCCESS_RES else ERROR_RES
-        return Json.encodeToString(JsonResponse(response, null, null))
+        val delete = db.delete(key)
+        val response = if (delete) SUCCESS_RES else ERROR_RES
+        val reason = if (delete) null else "No such key"
+        return Json.encodeToString(JsonResponse(response, reason, null))
     }
 }
 
