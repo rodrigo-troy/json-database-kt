@@ -20,10 +20,10 @@ class RegexMatcher {
     }
 
     fun getSetGetDeleteValues(input: String): Triple<String?, String?, String?> {
-        val matchResultSetGetDelete = regexSetGetDelete.find(input)
-        val type = matchResultSetGetDelete?.groups?.get(1)?.value
-        val index = matchResultSetGetDelete?.groups?.get(2)?.value
-        val message = matchResultSetGetDelete?.groups?.get(4)?.value
+        val matchResult = regexSetGetDelete.find(input)
+        val type = matchResult?.groups?.get(1)?.value
+        val index = matchResult?.groups?.get(2)?.value
+        val message = matchResult?.groups?.get(4)?.value
         return Triple(type, index, message)
     }
 }

@@ -10,20 +10,25 @@ fun main(args: Array<String>) {
     val clientSocket = ClientSocket()
     val msg = args.joinToString(" ")
 
-    if (regexMatcher.isExitCommand(msg)) {
-        val json = Json.encodeToString(JsonCommand("exit", null, null))
-        clientSocket.sendMessage(json)
-        println("Sent: $json")
-    } else if (regexMatcher.isNullCommand(msg)) {
-        println("Sent: null")
-    } else {
-        val (type, index, message) = regexMatcher.getSetGetDeleteValues(msg)
-        val json = Json.encodeToString(JsonCommand(type, index, message))
-        clientSocket.sendMessage(json)
-        println("Sent: $json")
-    }
+    try {
+        if (regexMatcher.isExitCommand(msg)) {
+            val json = Json.encodeToString(JsonCommand("exit", null, null))
+            clientSocket.sendMessage(json)
+            println("Sent: $json")
+        } else if (regexMatcher.isNullCommand(msg)) {
+            println("Sent: null")
+        } else {
+            val (type, index, message) = regexMatcher.getSetGetDeleteValues(msg)
+            val json = Json.encodeToString(JsonCommand(type, index, message))
+            clientSocket.sendMessage(json)
+            println("Sent: $json")
+        }
 
-    val readMessage = clientSocket.readMessage()
-    print("Received: $readMessage")
-    clientSocket.close()
+        val readMessage = clientSocket.readMessage()
+        println("Received: $readMessage")
+    } catch (e: Exception) {
+        println("Error: ${e.message}")
+    } finally {
+        clientSocket.close()
+    }
 }

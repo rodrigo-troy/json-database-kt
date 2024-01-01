@@ -1,24 +1,22 @@
 package jsondatabase.server
 
-const val SUCCESS_RES = "OK"
+import java.util.concurrent.ConcurrentHashMap
 
-class TextDatabase(dbSize: Int) {
-    private var database = MutableList(dbSize) { "" }
+class TextDatabase() {
+    private val database: ConcurrentHashMap<String, String> = ConcurrentHashMap()
 
-    fun set(index: Int, text: String): Boolean =
-        if (index in 1..database.size) {
-            database[index - 1] = text
+    fun set(key: String, text: String): Boolean =
+        if (key.isNotEmpty()) {
+            database[key] = text
             true
         } else false
 
-    fun get(index: Int): String? =
-        if (index in 1..database.size) {
-            database[index - 1].ifEmpty { null }
-        } else null
+    fun get(key: String): String? =
+        if (key.isNotEmpty()) database[key] else null
 
-    fun delete(index: Int): Boolean =
-        if (index in 1..database.size) {
-            database[index - 1] = ""
+    fun delete(key: String): Boolean =
+        if (key.isNotEmpty()) {
+            database.remove(key)
             true
         } else false
 }

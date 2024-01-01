@@ -9,8 +9,8 @@ import java.net.Socket
 /**
  * Represents a server socket that listens for incoming client connections and allows sending and receiving messages.
  */
-class ServerSocket {
-    private val server = ServerSocket(23456, 50, InetAddress.getByName("127.0.0.1"))
+class ServerSocket(port: Int, backlog: Int, host: String) {
+    private val server = ServerSocket(port, backlog, InetAddress.getByName(host))
     private lateinit var socket: Socket
     private lateinit var input: DataInputStream
     private lateinit var output: DataOutputStream
@@ -38,5 +38,6 @@ class ServerSocket {
         socket.close()
         input.close()
         output.close()
+        server.close()
     }
 }
